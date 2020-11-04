@@ -6,8 +6,7 @@ from flask_bootstrap import Bootstrap
 '''def create_app():
   app = Flask(__name__)
   Bootstrap(app)
-  return app 
-
+  return app
 app = create_app()'''
 app = Flask(__name__)
 Bootstrap(app)
@@ -23,6 +22,6 @@ def index():
     return render_template('home.html')
 
 @app.route('/players')
-def index():
-    return render_template('players.html')
+def players():
+    return render_template('players_list.html')
 
