@@ -13,11 +13,14 @@
 </div>
 
 <div class="container mt-5">
-    <div class="row">
-        {% for player, image in players%}
+{% for i in range(players|length) %}
+    {% if (i%3)==0 %}
+        <div class="row mt-5">
+    {% endif %}
+        {% set player, image = players[i] %}
         <div class="col-sm-4">
             <div class="card">
-                <img class="card-img-top" src="data:image/png;base64,{{ image }}" alt="{{player["name"]}}" >
+                <img class="card-img-top" src="data:image/png;base64,{{ image }}" alt="{{player["name"]}}">
                 <div class="card-body">
                     <h5 class="card-title" style="color: #E03A3E">{{player["name"]}}</h5>
                     <!--<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>-->
@@ -25,7 +28,9 @@
                 </div>
             </div>
         </div>
-        {% endfor %}
-    </div>
+        {% if (i%3)==2 %}
+            </div>
+        {% endif %}
+{% endfor %}
 </div>
 {% endblock %}

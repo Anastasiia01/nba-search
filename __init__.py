@@ -33,7 +33,6 @@ def players():
         info = dataLayer.getJsonDoc(player['uri'])
         image = dataLayer.getBinaryDoc(info['binary'])
         players.append((info, image))
-    players=players[0:3]
     print(len(players))
     return render_template('players_list.html', players = players)
 
