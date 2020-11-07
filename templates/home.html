@@ -4,12 +4,21 @@
 {% block content %}
 <div class="container mt-4">
     <h1>Welcome to our website! See all about favorite NBA Player!</h1>
-    <img id="my-img" alt="image" style="width: 70%;">
+    <img id="my-img" alt="image" src="data:image/png;base64,{{ image }}">
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
+    //var b = {{binary}}
+    /*
+    function hexToBase64(str) {
+        return btoa(String.fromCharCode.apply(null, str.replace(/\r|\n/g, "").replace(/([\da-fA-F]{2}) ?/g, "0x$1 ").replace(/ +$/, "").split(" ")));
+    }
 
+    function getImage
+    var img = new Image();
+    img.src = "data:image/jpeg;base64," + hexToBase64(binary);
+    document.body.appendChild(img);*/
 </script>
 {% endblock %}

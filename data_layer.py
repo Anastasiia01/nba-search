@@ -1,5 +1,6 @@
 from urllib.parse import urljoin
 from flask import jsonify
+from base64 import b64encode
 #from urllib import urlencode
 import requests
 
@@ -16,14 +17,26 @@ class DataLayer():
     def getBinaryDoc(self, uri):
         link = "{}{}{}".format(self.host, self.endpoints[0], uri)
         resp = requests.get(link, auth = self.auth)
-        return resp
+        #print(type(resp.content)) <class 'bytes'>
+        image = b64encode(resp.content).decode('utf')
+        return image
 
     def searchJsonDoc(self, query):
         link = "{}{}{}&format=json".format(self.host, self.endpoints[1], query)
         #print("link: ", link)
         resp = requests.get(link, auth = self.auth)
-        print(resp)
+        #print(resp)
         return resp.json()['results']
+
+
+    def getJsonDocs(self, uris):
+        result=[]
+        for uri in uris:
+            link = "{}{}{}".format(self.host, self.endpoints[0], uri)
+            resp = requests.get(link, auth = self.auth) 
+            result.append(resp.json())
+        return result
+   
 
 
 
