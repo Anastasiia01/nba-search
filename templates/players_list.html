@@ -1,35 +1,37 @@
 {% extends "base.html" %}
-{% block title %}Home{% endblock %}
+{% block title %}Players{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <h1 style="color: #257DCA;">NBA Players</h1>
     <!-- Search form -->
     <div class="row">
-        <div class="col-12 col-sm-4"><input class="form-control" type="text" placeholder="Search Players" aria-label="Search"></div>
-        <div class="col-sm-8"></div>
-
+        <form method="post" action="{{ url_for('search') }}">
+                <input name="query" class="form-control" type="text" placeholder="Search Players" aria-label="Search">
+                <input class="btn btn-primary" type="submit" style="background-color: #257DCA;" value ="Search">
+        </form>
     </div>
 </div>
 
 <div class="container mt-5">
 {% for i in range(players|length) %}
     {% if (i%3)==0 %}
-        <div class="row mt-5">
-    {% endif %}
+    <div class="row mt-5">
+        {% endif %}
         {% set player, image = players[i] %}
-        <div class="col-sm-4">
+        {% set name = player["name"] | replace(" ","") %}
+        <div class="col-12 col-sm-4">
             <div class="card">
                 <img class="card-img-top" src="data:image/png;base64,{{ image }}" alt="{{player["name"]}}">
                 <div class="card-body">
                     <h5 class="card-title" style="color: #E03A3E">{{player["name"]}}</h5>
                     <!--<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>-->
-                    <a href="#" class="btn btn-primary" style="background-color: #B32F32;">Learn More</a>
+                    <a href="{{ url_for('info', name=name) }}" class="btn btn-primary" style="background-color: #B32F32;">Learn More</a>
                 </div>
             </div>
         </div>
         {% if (i%3)==2 %}
-            </div>
+    </div>
         {% endif %}
 {% endfor %}
 </div>

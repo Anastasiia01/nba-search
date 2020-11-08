@@ -1,13 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from flask_bootstrap import Bootstrap
 from . import data_layer as dl
 
 
-'''def create_app():
-  app = Flask(__name__)
-  Bootstrap(app)
-  return app
-app = create_app()'''
 app = Flask(__name__)
 Bootstrap(app)
 dataLayer = dl.DataLayer()
@@ -24,11 +19,13 @@ def index():
     return render_template('home.html', image=image)
 
 @app.route('/players')
+@app.route('/players/<query>')
 
-def players():
-
+def players(query=None):
+    if query==None:
+        query="2018"
     players=[]
-    res = dataLayer.searchJsonDoc("2018")
+    res = dataLayer.searchJsonDoc(query)
     for player in res:
         info = dataLayer.getJsonDoc(player['uri'])
         image = dataLayer.getBinaryDoc(info['binary'])
@@ -36,12 +33,29 @@ def players():
     print(len(players))
     return render_template('players_list.html', players = players)
 
-@app.route('/search')
+
+
+@app.route('/search', methods=['POST'])
 
 def search():
-    #result = dataLayer.getJsonDocs('/player/KyleAnderson.json&uri=/player/MoBamba.json&category=content')
-    #print(result.json())
-    return "<html><p>res</p></html>"
+    query = request.form['query']
+    return redirect((url_for('players', query=query)))
+
+
+
+@app.route('/info/<name>')
+
+def info(name=None):
+    if not name:
+        return redirect(url_for('players'))
+    res = dataLayer.searchJsonDoc(name)
+    uri=res[0]["uri"]
+    info = dataLayer.getJsonDoc(uri)
+    image = dataLayer.getBinaryDoc(info['binary'])
+
+    return render_template('learn_more.html', info=info, image=image)
+
+
 
 #@app.route('/hello/<name>')
 #def hello(name=None):

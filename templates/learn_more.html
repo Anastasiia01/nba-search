@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Learn More{% endblock %}
+
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row mt-5">
+            <div class="col-12 col-sm-5">
+                <img class="img-fluid" src="data:image/png;base64,{{ image }}" alt="{{info["name"]}}">
+            </div>
+
+            <div class="col-12 col-sm-4">
+                <h1 style="color: #257DCA;">{{info["name"]}}</h1>
+                <div class="mt-3">
+                    {% set ns = namespace(check=true) %}
+                    <ul class="list-group">
+                        {% for k,v in info.items() %}
+                        {% if k!="seasons" and k!="binary" and k!="teams" and k!="name" and k!="draft_year" and k!="draft_round" and k!="draft_pick" %}
+                        {% set ns.check = not ns.check %}
+                        {% set key = k | upper | replace("_", " ") %}
+                        {% if ns.check==true %}
+                        <li class="list-group-item list-group-item-primary"><b>{{key}}</b> {{v}}</li>
+                        {% else %}
+                        <li class="list-group-item"><b>{{key}}</b> {{v}}</li>
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-12 col-sm-3">
+                <div>
+                    <h2>Popularity Score</h2>
+                </div>
+            </div>
+    </div>
+{% endblock %}
