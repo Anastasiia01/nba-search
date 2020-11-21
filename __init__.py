@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_bootstrap import Bootstrap
 from . import data_layer as dl
-
+from flask_login import LoginManager
 
 app = Flask(__name__)
+login_manager = LoginManager()
+login_manager.init_app(app)
 Bootstrap(app)
 dataLayer = dl.DataLayer()
 
@@ -15,8 +17,11 @@ if __name__ == "main":
 @app.route('/')
 
 def index():
-    image = dataLayer.getBinaryDoc("/image/MalikBeasley.png")
-    return render_template('home.html', image=image)
+    return render_template('home.html')
+
+@app.route('/signup')
+def signup():
+    return render_template('sign_up.html')
 
 @app.route('/players')
 @app.route('/players/<query>')

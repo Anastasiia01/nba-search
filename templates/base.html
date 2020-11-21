@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 {% extends "bootstrap/base.html" %}
 {% block title %}NBA{% endblock %}
 
@@ -14,6 +15,14 @@
             <div class="navbar-nav">
                 <a class="nav-item nav-link" href="{{ url_for('index') }}">Home</a>
                 <a class="nav-item nav-link" href="{{ url_for('players') }}">Players</a>
+            </div>
+            <div class="navbar-nav ml-auto">
+                <a class="nav-item nav-link" href="{{ url_for('signup') }}"><i class="fas fa-user"></i> Sign Up</a>
+                {% if login %}
+                <a class="nav-item nav-link" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                {%else%}
+                <a class="nav-item nav-link" href="{{ url_for('players') }}"><i class="fas fa-sign-in-alt"></i> Login</a>
+                {% endif %}
             </div>
         </div>
     </div>

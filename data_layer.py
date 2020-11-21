@@ -1,5 +1,3 @@
-from urllib.parse import urljoin
-from flask import jsonify
 from base64 import b64encode
 #from urllib import urlencode
 import requests
@@ -37,5 +35,3 @@ class DataLayer():
    
 
 
-
-#ttp://localhost:8055/v1/documents?uri=/image/MalikBeasley.png
