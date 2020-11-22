@@ -10,7 +10,14 @@ class DataLayer():
     def getJsonDoc(self, uri):
         link = "{}{}{}".format(self.host, self.endpoints[0], uri)
         resp = requests.get(link, auth = self.auth)
+        resp.raise_for_status()
         return resp.json()
+
+    def putJsonDoc(self, uri, content):
+        # resp = requests.put( ttp://localhost:8055/v1/documents?uri=/try/try3.json", json={'name':'Lena'}, auth = auth)"
+        link = "{}{}{}".format(self.host, self.endpoints[0], uri)
+        resp = requests.put(link, json = content, auth = self.auth)
+        return True
 
     def getBinaryDoc(self, uri):
         link = "{}{}{}".format(self.host, self.endpoints[0], uri)

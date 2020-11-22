@@ -17,11 +17,12 @@
                 <a class="nav-item nav-link" href="{{ url_for('players') }}">Players</a>
             </div>
             <div class="navbar-nav ml-auto">
-                <a class="nav-item nav-link" href="{{ url_for('signup') }}"><i class="fas fa-user"></i> Sign Up</a>
-                {% if login %}
-                <a class="nav-item nav-link" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                {% if session['username'] %}
+                <a class="nav-item nav-link" href="{{ url_for('logout') }}"><i class="fas fa-user"></i> Profile</a>
+                <a class="nav-item nav-link" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 {%else%}
-                <a class="nav-item nav-link" href="{{ url_for('players') }}"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a class="nav-item nav-link" href="{{ url_for('signup') }}"><i class="fas fa-user"></i> Sign Up</a>
+                <a class="nav-item nav-link" href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a>
                 {% endif %}
             </div>
         </div>

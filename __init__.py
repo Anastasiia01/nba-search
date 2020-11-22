@@ -1,32 +1,75 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_bootstrap import Bootstrap
-from . import data_layer as dl
-from flask_login import LoginManager
+from .data_layer import DataLayer
+import requests
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-login_manager = LoginManager()
-login_manager.init_app(app)
+app.config['SECRET_KEY'] = 'c6f0cc646e644b15d920872d4d2756d480e455f447124405'
 Bootstrap(app)
-dataLayer = dl.DataLayer()
+dataLayer = DataLayer()
 
 
 if __name__ == "main":
     app.run()
 
-
 @app.route('/')
-
 def index():
     return render_template('home.html')
 
-@app.route('/signup')
+
+@app.route("/logout", methods=['GET', 'POST'])
+def logout():
+    """Logout the current user."""
+    # Remove 'username' from the session if it exists
+    session.pop('username', None)
+    return redirect(url_for('index'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        given = request.form['password']
+        uri="{}.json".format(username)
+        try:
+            res = dataLayer.getJsonDoc(uri)
+            print(res)
+            pas=res['password']
+            print(pas)
+            if check_password(pas, given):
+                print("here")
+                session['username'] = username   # Save in session
+                return redirect(url_for('index'))
+        except requests.exceptions.RequestException:
+            return render_template('login.html', wrong_pass=True)
+    return render_template('login.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        given = request.form['password']
+        uri="{}.json".format(username)
+        try:
+            res = dataLayer.getJsonDoc(uri)
+            return render_template('sign_up.html', user_exists = True)
+        except:
+            enc_pass = generate_password_hash(given)
+            data={}
+            data["username"]=username
+            data["password"]=enc_pass
+            #print(data)
+            #print(given)
+            dataLayer.putJsonDoc(uri, data)
+            return render_template('home.html')
     return render_template('sign_up.html')
 
 @app.route('/players')
 @app.route('/players/<query>')
 
 def players(query=None):
+    if 'username' not in session:
+        return redirect(url_for('login'))
     if query==None:
         query="2018"
     players=[]
@@ -38,28 +81,27 @@ def players(query=None):
     print(len(players))
     return render_template('players_list.html', players = players)
 
-
+def check_password(actual, given):
+    """Check hashed password."""
+    return check_password_hash(actual, given)
 
 @app.route('/search', methods=['POST'])
-
 def search():
     query = request.form['query']
     return redirect((url_for('players', query=query)))
 
 
-
 @app.route('/info/<name>')
-
 def info(name=None):
+    if 'username' not in session:
+        return redirect(url_for('login'))
     if not name:
         return redirect(url_for('players'))
     res = dataLayer.searchJsonDoc(name)
     uri=res[0]["uri"]
     info = dataLayer.getJsonDoc(uri)
     image = dataLayer.getBinaryDoc(info['binary'])
-
     return render_template('learn_more.html', info=info, image=image)
-
 
 
 #@app.route('/hello/<name>')
