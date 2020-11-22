@@ -7,14 +7,22 @@
     <!-- Search form -->
     <div class="row">
         <form method="post" action="{{ url_for('search') }}">
-                <input name="query" class="form-control" type="text" placeholder="Search Players" aria-label="Search">
-                <input class="btn btn-primary mt-1" type="submit" style="background-color: #257DCA;" value ="Search">
+            <input name="query" id="query" class="form-control" type="search" placeholder="Search Players" aria-label="Search" required>
+            <input class="btn btn-primary mt-1" type="submit" style="background-color: #257DCA;" value="Search">
         </form>
     </div>
 </div>
 
+{% if players|length == 0 %}
+<div class="container mt-1">
+    <div class="row">
+        <p style="color: #257DCA;"> No results found!</p>
+    </div>
+</div>
+{% endif %}
+
 <div class="container mt-5">
-{% for i in range(players|length) %}
+    {% for i in range(players|length) %}
     {% if (i%3)==0 %}
     <div class="row mt-5">
         {% endif %}
@@ -32,8 +40,8 @@
         </div>
         {% if (i%3)==2 %}
     </div>
-        {% endif %}
-{% endfor %}
+    {% endif %}
+    {% endfor %}
 </div>
 <div class="container mt-3">
 

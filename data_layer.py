@@ -27,7 +27,7 @@ class DataLayer():
         return image
 
     def searchJsonDoc(self, query):
-        link = "{}{}{}&format=json&pageLength=18".format(self.host, self.endpoints[1], query)
+        link = "{}{}{}&format=json&pageLength=18&collection=player".format(self.host, self.endpoints[1], query)
         resp = requests.get(link, auth = self.auth)
         return resp.json()['results']
 
