@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+
+
+{% block content %}
+<div class="container mt-4">
+    <h1 style="color: #257DCA;">Hi, {{session['username']}}</h1>
+    <div class="row">
+        {% if wrong_pass%}
+        <div class="col-12">
+            <p style="color: #E03A3E;"> Invalid old password. Try again!</p>
+        </div>
+        {%endif%}
+        {% if change%}
+        <div>
+            <form method="post" action="{{ url_for('change') }}">
+                <div>
+                    <input name="oldpass" id="oldpass" class="form-control" type="password" placeholder="Old Password" required>
+                </div>
+                <div class="mt-3">
+                    <input name="newpass" id="newpass" class="form-control" type="password" placeholder="New Password" minlength="8" required>
+                    <small id="passHelp" class="form-text text-muted">Password should be 8 characters minimum</small>
+                </div>
+                <input class="btn btn-primary mt-2" type="submit" style="background-color: #257DCA;" value="Update Password">
+            </form>
+        </div>
+            {% else %}
+            {% if updated%}
+            <div class="col-12">
+                <p style="color: #257DCA;"> Password updated!</p>
+            </div>
+            {% endif %}
+            <div>
+                <form method="post" action="{{ url_for('profile') }}">
+                    <!--<input name="query" class="form-control" type="text" placeholder="Search Players" aria-label="Search">-->
+                    <input class="btn btn-primary mt-1" type="submit" style="background-color: #257DCA;" value="Edit Password">
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% endblock %}

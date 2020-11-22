@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'c6f0cc646e644b15d920872d4d2756d480e455f447124405'
+app.config['DEBUG'] = True
 Bootstrap(app)
 dataLayer = DataLayer()
 
@@ -18,7 +19,7 @@ def index():
     return render_template('home.html')
 
 
-@app.route("/logout", methods=['GET', 'POST'])
+@app.route("/logout")
 def logout():
     """Logout the current user."""
     # Remove 'username' from the session if it exists
@@ -30,14 +31,11 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         given = request.form['password']
-        uri="{}.json".format(username)
+        uri="/user/{}.json".format(username)
         try:
             res = dataLayer.getJsonDoc(uri)
-            print(res)
             pas=res['password']
-            print(pas)
             if check_password(pas, given):
-                print("here")
                 session['username'] = username   # Save in session
                 return redirect(url_for('index'))
         except requests.exceptions.RequestException:
@@ -49,7 +47,7 @@ def signup():
     if request.method == 'POST':
         username = request.form['username']
         given = request.form['password']
-        uri="{}.json".format(username)
+        uri="/user/{}.json".format(username)
         try:
             res = dataLayer.getJsonDoc(uri)
             return render_template('sign_up.html', user_exists = True)
@@ -63,6 +61,30 @@ def signup():
             dataLayer.putJsonDoc(uri, data)
             return render_template('home.html')
     return render_template('sign_up.html')
+
+@app.route("/profile", methods=['GET', 'POST'])
+def profile():   
+    if request.method == 'POST':
+        return render_template('profile.html', change=True)
+    return render_template('profile.html')
+
+@app.route('/change', methods=['POST'])
+def change():
+    username = session['username']
+    oldpass = request.form['oldpass']
+    newpass = request.form['newpass']
+    uri="/user/{}.json".format(username)
+    try:
+        res = dataLayer.getJsonDoc(uri)
+        pas=res['password']
+        if check_password(pas, oldpass):
+            #update pass in MarkLogic
+            return render_template('profile.html', updated=True)
+        else:
+            return render_template('profile.html', change=True, wrong_pass=True)
+    except:
+        return render_template('home.html')
+
 
 @app.route('/players')
 @app.route('/players/<query>')

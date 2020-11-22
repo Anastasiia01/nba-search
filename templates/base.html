@@ -18,7 +18,7 @@
             </div>
             <div class="navbar-nav ml-auto">
                 {% if session['username'] %}
-                <a class="nav-item nav-link" href="{{ url_for('logout') }}"><i class="fas fa-user"></i> Profile</a>
+                <a class="nav-item nav-link" href="{{ url_for('profile') }}"><i class="fas fa-user"></i> Profile</a>
                 <a class="nav-item nav-link" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 {%else%}
                 <a class="nav-item nav-link" href="{{ url_for('signup') }}"><i class="fas fa-user"></i> Sign Up</a>
