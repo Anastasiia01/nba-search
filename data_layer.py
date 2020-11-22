@@ -13,10 +13,16 @@ class DataLayer():
         resp.raise_for_status()
         return resp.json()
 
-    def putJsonDoc(self, uri, content):
+    def putJsonDoc(self, uri, content, collection):
+        # resp = requests.put( ttp://localhost:8055/v1/documents?uri=/try/try3.json", json={'name':'Lena'}, auth = auth)"
+        link = "{}{}{}&collection={}".format(self.host, self.endpoints[0], uri, collection)
+        resp = requests.put(link, json = content, auth = self.auth)
+        return True
+
+    def patchJsonDoc(self, uri, patch):
         # resp = requests.put( ttp://localhost:8055/v1/documents?uri=/try/try3.json", json={'name':'Lena'}, auth = auth)"
         link = "{}{}{}".format(self.host, self.endpoints[0], uri)
-        resp = requests.put(link, json = content, auth = self.auth)
+        resp = requests.patch(link, json = patch, auth = self.auth)
         return True
 
     def getBinaryDoc(self, uri):

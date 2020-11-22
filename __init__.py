@@ -26,6 +26,7 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -38,9 +39,14 @@ def login():
             if check_password(pas, given):
                 session['username'] = username   # Save in session
                 return redirect(url_for('index'))
+            else:
+                #wrong password
+                return render_template('login.html', wrong_credentials=True)
         except requests.exceptions.RequestException:
-            return render_template('login.html', wrong_pass=True)
+            #wrong username
+            return render_template('login.html', wrong_credentials=True)
     return render_template('login.html')
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -56,11 +62,10 @@ def signup():
             data={}
             data["username"]=username
             data["password"]=enc_pass
-            #print(data)
-            #print(given)
-            dataLayer.putJsonDoc(uri, data)
+            dataLayer.putJsonDoc(uri, data, "user")
             return render_template('home.html')
     return render_template('sign_up.html')
+
 
 @app.route("/profile", methods=['GET', 'POST'])
 def profile():   
@@ -68,8 +73,10 @@ def profile():
         return render_template('profile.html', change=True)
     return render_template('profile.html')
 
+
 @app.route('/change', methods=['POST'])
 def change():
+    data = {"pathlang": "jsonpath", "patch": [{"replace" : {"select": "password"}}]}
     username = session['username']
     oldpass = request.form['oldpass']
     newpass = request.form['newpass']
@@ -79,6 +86,9 @@ def change():
         pas=res['password']
         if check_password(pas, oldpass):
             #update pass in MarkLogic
+            data["patch"][0]["replace"]["content"]=generate_password_hash(newpass)
+            dataLayer.patchJsonDoc(uri, data)
+
             return render_template('profile.html', updated=True)
         else:
             return render_template('profile.html', change=True, wrong_pass=True)
@@ -100,7 +110,6 @@ def players(query=None):
         info = dataLayer.getJsonDoc(player['uri'])
         image = dataLayer.getBinaryDoc(info['binary'])
         players.append((info, image))
-    print(len(players))
     return render_template('players_list.html', players = players)
 
 def check_password(actual, given):
